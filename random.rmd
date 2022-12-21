@@ -20,10 +20,10 @@ library(rlang)
 
 
 ```{r}
-arrow::read_parquet(file="data/FinalCompleteData.parquet") %>%
-  dplyr::filter(Country_Name=="Nigeria") %>%
-  dplyr::distinct()
+arrow::read_parquet(file="data/FinalCompleteData.parquet")
 ```
+
+
 
 ```{r}
 country_info <- function(col_name, col_value){
