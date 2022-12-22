@@ -5,7 +5,8 @@ library(ggplot2)
 library(arrow)
 
 
-#' Helper function for country_key_details.
+#' Get Key Country Details
+#' @description Helper function for country_key_details.
 #' @param col_name The column name to be extracted from the loaded data frame.
 #' @param col_value The value which is used to filter col_name
 #' @importFrom stringr str_detect
@@ -39,7 +40,8 @@ country_info <- function(col_name, col_value){
 
 
 
-#' This function returns important information regarding specified country.
+#' Return Key Country Info
+#' @description This function returns important information regarding specified country.
 #' @param country_name The name of the country whose details the user wants to extract.
 #' @param country_code The country code of the country.
 #' @importFrom stringr str_to_title
@@ -107,7 +109,8 @@ country_key_details <- function(country_name, country_code) {
 
 
 
-#' This function returns the country leader for the specified country.
+#' View Country Leader
+#' @description This function returns the country leader for the specified country.
 #' @param country_name The name of the country whose country_leader the user wants to extract.
 #' @param country_code The country code of the country.
 #' @importFrom dplyr filter
@@ -137,7 +140,8 @@ country_leader <- function(country_name, country_code) {
 
 
 
-#' This function returns names of all the countries in the world.
+#' View All Countries
+#' @description This function returns names of all the countries in the world.
 #' @importFrom dplyr select distinct
 #' @export
 #' @return A vector
@@ -147,13 +151,14 @@ country_leader <- function(country_name, country_code) {
 all_countries <- function(){
   # read the data
   all_data <- FinalCompleteData
-  result <- all_data %>% dplyr::select(Country_Name) %>% dplyr::distinct()%>%collect()%>% as.matrix%>%as.vector()
+  result <- all_data %>% dplyr::select(Country_Name) %>% dplyr::distinct() %>% collect() %>% as.matrix %>% as.vector()
   return(result)
 }
 
 
 
-#' This function extracts vector of World Bank indicators.
+#' All World Bank Indicators
+#' @description This function extracts vector of World Bank indicators.
 #' @importFrom dplyr select distinct
 #' @export
 #' @return A vector
@@ -163,14 +168,15 @@ all_countries <- function(){
 all_indicators <- function(){
   # read the data
   all_data <- FinalCompleteData
-  result <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct()%>%collect()%>% as.matrix%>%as.vector()
+  result <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct() %>% collect() %>% as.matrix %>% as.vector()
   return(result)
 }
 
 
 
 
-#' Helper function for country_indicator
+#' Helper Function
+#' @description Helper function for country_indicator
 #' @param col_name The column name to be extracted from the loaded data frame.
 #' @param col_value The value which is used to filter col_name.
 #' @param indicator_contains A string that indicator should contain.
@@ -222,7 +228,8 @@ indicators_info <- function(col_name, col_value, indicator_contains, year){
 
 
 
-#' This function returns World Bank Indicators for a specified country.
+#' Specific Indicator for Specific Country
+#' @description This function returns World Bank Indicators for a specified country.
 #' @param country_name The name of the country whose details the user wants to extract.
 #' @param country_code The country code of the country.
 #' @param indicator_contains A string that world bank indicator should contain.
@@ -300,7 +307,8 @@ country_indicator <- function(country_name, country_code, indicator_contains, ye
 
 
 
-#' This function ranks countries by their performance in a particular world bank indicator.
+#' Rank Country By Indicator
+#' @description This function ranks countries by their performance in a particular world bank indicator.
 #' @param indicator_name The full indicator name the user is interested in.
 #' @param year The year you are interested in. Must be a string.
 #' @param n Number of countries to be ranked. Maximum is 231 and Minimum is 1.
@@ -355,10 +363,10 @@ rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1
   }
 
   # check if indicator_name exists
-  indicators_vec <- all_data %>%dplyr::select(Indicator_Name) %>% collect() %>% as.matrix %>% as.vector()
+  indicators_vec <- all_data %>% dplyr::select(Indicator_Name) %>% collect() %>% as.matrix %>% as.vector()
   if(!indicator_name %in% indicators_vec) {
     #if indicator_name does not exist
-    indicators_like <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct() %>%dplyr::filter(str_detect(Indicator_Name, paste("(?i)", indicator_name, sep=""))) %>% collect() %>% as.matrix %>% as.vector()
+    indicators_like <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct() %>% dplyr::filter(str_detect(Indicator_Name, paste("(?i)", indicator_name, sep=""))) %>% collect() %>% as.matrix %>% as.vector()
 
     if(length(indicators_like > 0)){
       options(warn = 1)
@@ -372,17 +380,18 @@ rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1
     final<- all_data %>%
       dplyr::filter(Indicator_Name==indicator_name) %>%
       dplyr::select(c(1, 5:66)) %>%
-      dplyr::selectmutate(dplyr::across(dplyr::starts_with("1")|dplyr::starts_with("2"), ~as.numeric(gsub(",", ".", .x)))) %>%
+      dplyr::mutate(dplyr::across(dplyr::starts_with("1")|dplyr::starts_with("2"), ~as.numeric(gsub(",", ".", .x)))) %>%
       tidyr::pivot_longer(cols = c(2:63), names_to="Year", values_to = "values") %>%
       dplyr::filter(Year==year) %>%
       dplyr::top_n(n*pos)
-    if (pos==-1){return(final%>%dplyr::arrange(values))}else{return(final%>%dplyr::arrange(desc(values)))}
+    if (pos==-1){return(final %>% dplyr::arrange(values))}else{return(final %>% dplyr::arrange(desc(values)))}
   }
 }
 
 
 
-#' This function returns all indicators that contain string provided.
+#' All Indicators like String
+#' @description This function returns all indicators that contain string provided.
 #' @param like A string the indicator name should contain.
 #' @importFrom dplyr select distinct filter
 #' @export
@@ -398,12 +407,10 @@ all_indicators_like <- function(like){
   }
   # read the data
   all_data <- FinalCompleteData
-  indicators_like <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct() %>%dplyr::filter(str_detect(Indicator_Name, paste("(?i)", like, sep=""))) %>% collect() %>% as.matrix %>% as.vector()
+  indicators_like <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct() %>% dplyr::filter(str_detect(Indicator_Name, paste("(?i)", like, sep=""))) %>% collect() %>% as.matrix %>% as.vector()
   if(length(indicators_like)>0){return(indicators_like)} else{
     options(warn = 1)
     warning(sprintf("No indicator like %s found", like))
     return()
   }
 }
-
-

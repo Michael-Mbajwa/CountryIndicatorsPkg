@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{all_indicators_like}
 \alias{all_indicators_like}
-\title{This function returns all indicators that contain string provided.}
+\title{All Indicators like String}
 \usage{
 all_indicators_like(like)
 }

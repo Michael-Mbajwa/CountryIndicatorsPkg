@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{country_indicator}
 \alias{country_indicator}
-\title{This function returns World Bank Indicators for a specified country.}
+\title{Specific Indicator for Specific Country}
 \usage{
 country_indicator(country_name, country_code, indicator_contains, year)
 }

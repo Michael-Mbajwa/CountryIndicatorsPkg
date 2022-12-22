@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{country_leader}
 \alias{country_leader}
-\title{This function returns the country leader for the specified country.}
+\title{View Country Leader}
 \usage{
 country_leader(country_name, country_code)
 }

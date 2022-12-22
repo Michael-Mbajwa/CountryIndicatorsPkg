@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{indicators_info}
 \alias{indicators_info}
-\title{Helper function for country_indicator}
+\title{Helper Function}
 \usage{
 indicators_info(col_name, col_value, indicator_contains, year)
 }

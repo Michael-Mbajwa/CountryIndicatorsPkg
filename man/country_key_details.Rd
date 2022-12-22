@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{country_key_details}
 \alias{country_key_details}
-\title{This function returns important information regarding specified country.}
+\title{Return Key Country Info}
 \usage{
 country_key_details(country_name, country_code)
 }

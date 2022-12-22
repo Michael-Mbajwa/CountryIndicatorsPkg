@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{all_countries}
 \alias{all_countries}
-\title{This function returns names of all the countries in the world.}
+\title{View All Countries}
 \usage{
 all_countries()
 }

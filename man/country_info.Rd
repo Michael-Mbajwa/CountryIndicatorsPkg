@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{country_info}
 \alias{country_info}
-\title{Helper function for country_key_details.}
+\title{Get Key Country Details}
 \usage{
 country_info(col_name, col_value)
 }

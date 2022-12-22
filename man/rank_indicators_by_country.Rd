@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{rank_indicators_by_country}
 \alias{rank_indicators_by_country}
-\title{This function ranks countries by their performance in a particular world bank indicator.}
+\title{Rank Country By Indicator}
 \usage{
 rank_indicators_by_country(indicator_name, year = "2021", n = 231, pos = 1)
 }

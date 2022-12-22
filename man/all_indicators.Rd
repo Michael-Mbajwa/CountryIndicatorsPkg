@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{all_indicators}
 \alias{all_indicators}
-\title{This function extracts vector of World Bank indicators.}
+\title{All World Bank Indicators}
 \usage{
 all_indicators()
 }
