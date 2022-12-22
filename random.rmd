@@ -402,5 +402,17 @@ if(da != 1 & da != -1){
 ```
 
 
+```{r}
+# Things I learn
+devtools::load_all(".")
+
+# Update package documentation
+devtools::document()
+```
+
+
+```{r}
+arrow::read_parquet(file="data/FinalCompleteData.parquet")
+```
 
 

@@ -4,11 +4,20 @@ library(dplyr)
 library(ggplot2)
 library(arrow)
 
-#----- Country Key Details-----#
-# Child code that returns tibble
+
+#' Helper function for country_key_details.
+#' @param col_name The column name to be extracted from the loaded data frame.
+#' @param col_value The value which is used to filter col_name
+#' @importFrom stringr str_detect
+#' @importFrom dplyr filter select distinct
+#' @importFrom tidyr pivot_longer
+#' @return A data frame
+#' @details
+#' This is a reusable function that allows other functions to create a filtered data frame with
+#' a specific column of interest having specified values.
 country_info <- function(col_name, col_value){
   # read the data
-  all_data <- arrow::read_parquet(file="data/FinalCompleteData.parquet")
+  all_data <- FinalCompleteData
 
   # check if parameter exists
   if(sum(stringr::str_detect(all_data
@@ -21,7 +30,7 @@ country_info <- function(col_name, col_value){
 
   all_data %>%
     dplyr::filter({{col_name}}==col_value) %>%
-    select(c(Country_Name, Long_Name, Country_Code, Currency_Unit, Region, Income_Group, Head_of_state, Head_of_government, Gender_HoS)) %>%
+    dplyr::select(c(Country_Name, Long_Name, Country_Code, Currency_Unit, Region, Income_Group, Head_of_state, Head_of_government, Gender_HoS)) %>%
     dplyr::distinct() %>%
     tidyr::pivot_longer(cols = c(Country_Name, Long_Name, Country_Code, Currency_Unit, Region, Income_Group, Head_of_state, Head_of_government, Gender_HoS),
                         names_to = "Columns",
@@ -30,7 +39,24 @@ country_info <- function(col_name, col_value){
 
 
 
-# -----Parent code for checking constraints-----#
+#' This function returns important information regarding specified country.
+#' @param country_name The name of the country whose details the user wants to extract.
+#' @param country_code The country code of the country.
+#' @importFrom stringr str_to_title
+#' @export
+#' @return A data frame
+#' @details
+#' This function allows the user to create a data frame containing general overview of a country.
+#' The information returned contains Country Name, Country Code, Currency, Unit, Income Group,
+#' Head of State, and gender of head of state.
+#' Either one of the parameters must be provided.
+#' See the examples below for its usage.
+#' @examples
+#' # See country details for America using country code
+#' country_key_details(country_code = "usa")
+#' # See country details for Nigeria using country Name
+#' country_key_details(country_name = "nigeria")
+#' @author Michael Mbajwa
 country_key_details <- function(country_name, country_code) {
   # stop if no arguments were provided
   if(missing(country_name) & missing(country_code)){
@@ -81,7 +107,23 @@ country_key_details <- function(country_name, country_code) {
 
 
 
-# ---------- Function for extracting country leaders ------------
+#' This function returns the country leader for the specified country.
+#' @param country_name The name of the country whose country_leader the user wants to extract.
+#' @param country_code The country code of the country.
+#' @importFrom dplyr filter
+#' @export
+#' @return A data frame
+#' @details
+#' This function allows the user to create a data frame containing general information of a country's leader.
+#' The information returned contains, Head of State name, and gender of head of state.
+#' Either one of the parameters must be provided.
+#' See the examples below for its usage.
+#' @examples
+#' # See country leader details for America using country code
+#' country_leader(country_code = "usa")
+#' # See country leader details for Luxembourg using country name
+#' country_leader(country_name = "luxembourg")
+#' @author Michael Mbajwa
 country_leader <- function(country_name, country_code) {
   # call the country_key_details function
   final_results <- country_key_details(country_name, country_code)
@@ -94,38 +136,54 @@ country_leader <- function(country_name, country_code) {
 }
 
 
-# ---------- Function for extracting vector of all existing countries in our dataset------------
+
+#' This function returns names of all the countries in the world.
+#' @importFrom dplyr select distinct
+#' @export
+#' @return A vector
+#' @details
+#' This function allows the user to create a vector of all countries.
+#' @author Michael Mbajwa
 all_countries <- function(){
   # read the data
-  all_data <- arrow::read_parquet(file="data/FinalCompleteData.parquet")
+  all_data <- FinalCompleteData
   result <- all_data %>% dplyr::select(Country_Name) %>% dplyr::distinct()%>%collect()%>% as.matrix%>%as.vector()
   return(result)
 }
 
 
-# ---------- Function for extracting vector of all World Bank indicators in our dataset------------
+
+#' This function extracts vector of World Bank indicators.
+#' @importFrom dplyr select distinct
+#' @export
+#' @return A vector
+#' @details
+#' This function allows the user to create a vector of World Bank indicators.
+#' @author Michael Mbajwa
 all_indicators <- function(){
   # read the data
-  all_data <- arrow::read_parquet(file="data/FinalCompleteData.parquet")
+  all_data <- FinalCompleteData
   result <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct()%>%collect()%>% as.matrix%>%as.vector()
   return(result)
 }
 
 
-# ---------- Function for extracting tibble of entire dataset used in package------------
-all_data <- function(){
-  # read the data
-  all_data <- arrow::read_parquet(file="data/FinalCompleteData.parquet")
-  return(all_data)
-}
 
 
-
-# ----Function to return Certain Indicators per country in a year
-# Child function
+#' Helper function for country_indicator
+#' @param col_name The column name to be extracted from the loaded data frame.
+#' @param col_value The value which is used to filter col_name.
+#' @param indicator_contains A string that indicator should contain.
+#' @param year The year you are interested in. Must be a string.
+#' @importFrom stringr str_detect
+#' @importFrom dplyr filter select distinct
+#' @importFrom tidyr pivot_longer
+#' @return A data frame
+#' @details
+#' This is a reusable function to be used by other functions.
 indicators_info <- function(col_name, col_value, indicator_contains, year){
   # read the data
-  all_data <- arrow::read_parquet(file="data/FinalCompleteData.parquet")
+  all_data <- FinalCompleteData
 
 
   #check if parameter "year" exists
@@ -136,7 +194,7 @@ indicators_info <- function(col_name, col_value, indicator_contains, year){
 
   # check if parameter "indicator_contains" exists
   if(sum(stringr::str_detect(all_data
-                             %>%select(Indicator_Name)
+                             %>%dplyr::select(Indicator_Name)
                              %>%collect()
                              %>% as.matrix
                              %>%as.vector(), paste("(?i)", indicator_contains, sep=""))) <= 0) {
@@ -146,7 +204,7 @@ indicators_info <- function(col_name, col_value, indicator_contains, year){
 
   # check if parameter "col_value" exists
   if(sum(stringr::str_detect(all_data
-                             %>%select({{col_name}})
+                             %>%dplyr::select({{col_name}})
                              %>%collect()
                              %>% as.matrix
                              %>%as.vector(), paste("^", col_value, "$", sep=""))) <= 0) {
@@ -157,10 +215,30 @@ indicators_info <- function(col_name, col_value, indicator_contains, year){
   return(all_data %>%
            dplyr::filter({{col_name}}==col_value & str_detect(Indicator_Name, paste("(?i)", indicator_contains, sep=""))) %>% select(c(3, 5:66)) %>%
            tidyr::pivot_longer(cols = c(2:63), names_to = "Year", values_to = "Values") %>%
-           filter(Year==year))
+           dplyr::filter(Year==year))
 }
 
-# Parent function
+
+
+
+
+#' This function returns World Bank Indicators for a specified country.
+#' @param country_name The name of the country whose details the user wants to extract.
+#' @param country_code The country code of the country.
+#' @param indicator_contains A string that world bank indicator should contain.
+#' @param year The year you are interested in. Must be a string.
+#' @importFrom stringr str_to_title str_to_upper
+#' @export
+#' @return A data frame
+#' @details
+#' This function allows the user to create a data frame containing key world bank indicators containing a
+#' certain string. Indicators are filtered down to the year and country name.
+#' Either one country code or country name must be provided.
+#' See the example below for its usage.
+#' @examples
+#' # See country indicator containing health for America using country name
+#' country_indicator(country_code = "usa", indicator_contains = "health", year = "2002")
+#' @author Michael Mbajwa
 country_indicator <- function(country_name, country_code, indicator_contains, year){
   # check if arguments indicator_contains, year are missing
   if(missing(indicator_contains) & missing(year)){
@@ -221,7 +299,28 @@ country_indicator <- function(country_name, country_code, indicator_contains, ye
 }
 
 
-# -----------Rank Countries by Indicator-------------#
+
+#' This function ranks countries by their performance in a particular world bank indicator.
+#' @param indicator_name The full indicator name the user is interested in.
+#' @param year The year you are interested in. Must be a string.
+#' @param n Number of countries to be ranked. Maximum is 231 and Minimum is 1.
+#' @param pos View the countries in ascending or descending order. Use 1 for Top result and -1 for bottom results.
+#' @importFrom stringr str_to_title str_to_upper
+#' @importFrom dplyr filter select distinct top_n arrange across starts_with
+#' @importFrom tidyr pivot_longer
+#' @export
+#' @return A data frame
+#' @details
+#' This function allows the user to create a data frame containing the rank of countries according
+#' to an indicator in a specified year.See the examples below for its usage.
+#' @section Warning: Getting indicator name can be difficult. Run all_indicators_like(like)
+#'         with like being a string you want your indicator to contain. From there you can select your indicator name.
+#' @examples
+#' # See the top 10 countries for a specific indicator in a specific year
+#' rank_indicators_by_country("Current health expenditure per capita (current US$)", year="2002", n=10)
+#' # See the bottom 10 countries for a specific indicator in a specific year
+#' rank_indicators_by_country("Current health expenditure per capita (current US$)", year="2002", n=10, p=-1)
+#' @author Michael Mbajwa
 rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1) {
   # check if indicator_name is missing
   if(missing(indicator_name)){
@@ -248,7 +347,7 @@ rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1
   }
 
   # read the data
-  all_data <- arrow::read_parquet(file="data/FinalCompleteData.parquet")
+  all_data <- FinalCompleteData
 
   #check if parameter "year" exists
   if(!(year %in% colnames(all_data))){
@@ -273,7 +372,7 @@ rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1
     final<- all_data %>%
       dplyr::filter(Indicator_Name==indicator_name) %>%
       dplyr::select(c(1, 5:66)) %>%
-      mutate(dplyr::across(dplyr::starts_with("1")|dplyr::starts_with("2"), ~as.numeric(gsub(",", ".", .x)))) %>%
+      dplyr::selectmutate(dplyr::across(dplyr::starts_with("1")|dplyr::starts_with("2"), ~as.numeric(gsub(",", ".", .x)))) %>%
       tidyr::pivot_longer(cols = c(2:63), names_to="Year", values_to = "values") %>%
       dplyr::filter(Year==year) %>%
       dplyr::top_n(n*pos)
@@ -283,13 +382,22 @@ rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1
 
 
 
-# -------- Return all indicators like a given strig
+#' This function returns all indicators that contain string provided.
+#' @param like A string the indicator name should contain.
+#' @importFrom dplyr select distinct filter
+#' @export
+#' @return A vector
+#' @details This function returns all indicators that contain strings provided
+#' @examples
+#' # See all indicators that contain health in them
+#' all_indicators_like("health")
+#' @author Michael Mbajwa
 all_indicators_like <- function(like){
   if (missing(like)){
     stop("like parameter must be provided.")
   }
   # read the data
-  all_data <- arrow::read_parquet(file="data/FinalCompleteData.parquet")
+  all_data <- FinalCompleteData
   indicators_like <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct() %>%dplyr::filter(str_detect(Indicator_Name, paste("(?i)", like, sep=""))) %>% collect() %>% as.matrix %>% as.vector()
   if(length(indicators_like)>0){return(indicators_like)} else{
     options(warn = 1)
@@ -297,6 +405,5 @@ all_indicators_like <- function(like){
     return()
   }
 }
-
 
 
