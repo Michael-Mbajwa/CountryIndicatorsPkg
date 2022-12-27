@@ -416,3 +416,15 @@ arrow::read_parquet(file="data/FinalCompleteData.parquet")
 ```
 
 
+
+```{r}
+# Things I learn
+devtools::load_all(".")
+
+# Update package documentation
+devtools::document()
+
+write.csv(a, file="tests/testthat/test_data_all_indicators_like.csv", row.names=F)
+read.csv("tests/testthat/test_data_all_indicators_like.csv")%>%collect()%>%as.matrix()%>%as.vector()
+```
+

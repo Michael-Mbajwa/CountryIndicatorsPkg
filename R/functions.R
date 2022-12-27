@@ -411,6 +411,5 @@ all_indicators_like <- function(like){
   if(length(indicators_like)>0){return(indicators_like)} else{
     options(warn = 1)
     warning(sprintf("No indicator like %s found", like))
-    return()
   }
 }
