@@ -5,7 +5,7 @@ completeData <- FinalCompleteData
 test_that("selecting indicators like hiv works", {
   returned_value <- all_indicators_like("hiv")
 
-  expected_value <- readr::read_csv("tests/testthat/test_data_all_indicators_like.csv")%>%collect()%>%as.matrix()%>%as.vector()
+  expected_value <- readr::read_csv("test_data_all_indicators_like.csv")%>%collect()%>%as.matrix()%>%as.vector()
 
   expect_equal(returned_value, expected_value)
 })
