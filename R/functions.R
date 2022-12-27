@@ -52,9 +52,9 @@ country_info <- function(col_name, col_value){
 #' The information returned contains Country Name, Country Code, Currency, Unit, Income Group,
 #' Head of State, and gender of head of state.
 #' Either one of the parameters must be provided.
-#' See the examples below for its usage.
 #' @examples
 #' # See country details for America using country code
+#' library("CountryIndicatorsPkg")
 #' country_key_details(country_code = "usa")
 #' # See country details for Nigeria using country Name
 #' country_key_details(country_name = "nigeria")
