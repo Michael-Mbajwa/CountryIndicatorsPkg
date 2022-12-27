@@ -425,9 +425,14 @@ devtools::test('.')
 # Update package documentation
 devtools::document()
 
-usethis::use_test("clean_unemp")
+usethis::use_test("country_key_details")
 
 write.csv(a, file="tests/testthat/test_data_all_indicators_like.csv", row.names=F)
 read.csv("tests/testthat/test_data_all_indicators_like.csv")%>%collect()%>%as.matrix()%>%as.vector()
+
+
+country_key_details(country_name = "nigeria")%>%readr::write_csv("tests/testthat/test_data_country_key_details_nigeria.csv")
+
+country_key_details(country_code = "usa")%>%readr::write_csv("tests/testthat/test_data_country_key_details_usa.csv")
 ```
 

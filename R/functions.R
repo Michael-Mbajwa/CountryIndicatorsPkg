@@ -248,7 +248,7 @@ indicators_info <- function(col_name, col_value, indicator_contains, year){
 #' @author Michael Mbajwa
 country_indicator <- function(country_name, country_code, indicator_contains, year){
   # check if arguments indicator_contains, year are missing
-  if(missing(indicator_contains) & missing(year)){
+  if(missing(indicator_contains) | missing(year)){
     stop("Arguments: indicator_contains and year must be provided.")
   }
   if(missing(country_name) & missing(country_code)){
