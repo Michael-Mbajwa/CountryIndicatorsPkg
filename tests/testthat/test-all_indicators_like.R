@@ -1,5 +1,3 @@
-completeData <- FinalCompleteData
-
 # Is the function returning an expected value for a given input?
 
 test_that("selecting indicators like hiv works", {
