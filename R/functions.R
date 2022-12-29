@@ -13,6 +13,7 @@ library(arrow)
 #' @importFrom dplyr filter select distinct
 #' @importFrom tidyr pivot_longer
 #' @return A data frame
+#' @noRd
 #' @details
 #' This is a reusable function that allows other functions to create a filtered data frame with
 #' a specific column of interest having specified values.
@@ -185,6 +186,7 @@ all_indicators <- function(){
 #' @importFrom dplyr filter select distinct
 #' @importFrom tidyr pivot_longer
 #' @return A data frame
+#' @noRd
 #' @details
 #' This is a reusable function to be used by other functions.
 indicators_info <- function(col_name, col_value, indicator_contains, year){
