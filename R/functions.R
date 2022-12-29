@@ -14,10 +14,11 @@ library(arrow)
 #' @importFrom tidyr pivot_longer
 #' @return A data frame
 #' @noRd
+#' @keywords internal
 #' @details
 #' This is a reusable function that allows other functions to create a filtered data frame with
 #' a specific column of interest having specified values.
-country_info <- function(col_name, col_value){
+.country_info <- function(col_name, col_value){
   # read the data
   all_data <- FinalCompleteData
 
@@ -72,7 +73,7 @@ country_key_details <- function(country_name, country_code) {
     if(!is.character(country_name)){
       stop(sprintf("country_name and country_code must be strings"))
     }
-    return(country_info(col_name=Country_Name, col_value = stringr::str_to_title(country_name)))
+    return(.country_info(col_name=Country_Name, col_value = stringr::str_to_title(country_name)))
   }
 
   # for conditions where only country_code is provided
@@ -81,7 +82,7 @@ country_key_details <- function(country_name, country_code) {
     if(!is.character(country_code)){
       stop(sprintf("country_name and country_code must be strings"))
     }
-    return(country_info(col_name = Country_Code, col_value = stringr::str_to_upper(country_code)))
+    return(.country_info(col_name = Country_Code, col_value = stringr::str_to_upper(country_code)))
   }
 
   # for conditions were both country_name and country_code are provided
@@ -91,12 +92,12 @@ country_key_details <- function(country_name, country_code) {
       stop(sprintf("country_name and country_code must be strings"))
     }
     # first try with the country_name
-    attempt <- try(country_info(col_name = Country_Name, col_value = stringr::str_to_title(country_name)), silent=TRUE)
+    attempt <- try(.country_info(col_name = Country_Name, col_value = stringr::str_to_title(country_name)), silent=TRUE)
     if(inherits(attempt, "try-error")){
       # try with country code if country name fails
       options(warn = 1)
       warning("Country Name Not found. Trying Country code.......")
-      attempt2 <- try(country_info(col_name = Country_Code, col_value = stringr::str_to_upper(country_code)), silent=TRUE)
+      attempt2 <- try(.country_info(col_name = Country_Code, col_value = stringr::str_to_upper(country_code)), silent=TRUE)
       if(inherits(attempt2, "try-error")){
         return(c(attempt, attempt2))
       } else {
@@ -187,9 +188,10 @@ all_indicators <- function(){
 #' @importFrom tidyr pivot_longer
 #' @return A data frame
 #' @noRd
+#' @keywords internal
 #' @details
 #' This is a reusable function to be used by other functions.
-indicators_info <- function(col_name, col_value, indicator_contains, year){
+.indicators_info <- function(col_name, col_value, indicator_contains, year){
   # read the data
   all_data <- FinalCompleteData
 
@@ -265,7 +267,7 @@ country_indicator <- function(country_name, country_code, indicator_contains, ye
     if(!is.character(country_name) | !is.character(indicator_contains) | !is.character(year)){
       stop("All arguments must provided as strings")
     }
-    return(indicators_info(col_name=Country_Name, col_value = stringr::str_to_title(country_name), indicator_contains = indicator_contains, year = year))
+    return(.indicators_info(col_name=Country_Name, col_value = stringr::str_to_title(country_name), indicator_contains = indicator_contains, year = year))
   }
 
 
@@ -275,7 +277,7 @@ country_indicator <- function(country_name, country_code, indicator_contains, ye
     if(!is.character(country_code) | !is.character(indicator_contains) | !is.character(year)){
       stop(sprintf("All arguments must provided as strings"))
     }
-    return(indicators_info(col_name = Country_Code, col_value = stringr::str_to_upper(country_code),
+    return(.indicators_info(col_name = Country_Code, col_value = stringr::str_to_upper(country_code),
                            indicator_contains = indicator_contains, year = year))
   }
 
@@ -289,12 +291,12 @@ country_indicator <- function(country_name, country_code, indicator_contains, ye
     }
 
     # first try with the country_name
-    attempt <- try(indicators_info(col_name=Country_Name, col_value = stringr::str_to_title(country_name), indicator_contains = indicator_contains, year = year), silent=TRUE)
+    attempt <- try(.indicators_info(col_name=Country_Name, col_value = stringr::str_to_title(country_name), indicator_contains = indicator_contains, year = year), silent=TRUE)
     if(inherits(attempt, "try-error")){
       # try with country code if country name fails
       options(warn = 1)
       warning("Country Name Not found. Trying Country code.......")
-      attempt2 <- try(indicators_info(col_name = Country_Code, col_value = stringr::str_to_upper(country_code),
+      attempt2 <- try(.indicators_info(col_name = Country_Code, col_value = stringr::str_to_upper(country_code),
                                       indicator_contains = indicator_contains, year = year), silent=TRUE)
       if(inherits(attempt2, "try-error")){
         return(c(attempt, attempt2))
