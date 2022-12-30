@@ -4,6 +4,8 @@
 
 ### Student ID: **0210152807**
 
+### Email: **michael.mbajwa.001@student.uni.lu**
+
 > R package which provides an accurate dataset containing some key World Bank Development Indicators. Package also provides functions for efficiently understanding these development indicators at a country level.
 
 
