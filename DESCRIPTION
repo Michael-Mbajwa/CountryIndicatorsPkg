@@ -13,19 +13,17 @@ RemoteType: github
 Depends: 
     R (>= 4.1),
 Imports:
-    tidyverse,
-    magrittr,
     tidyr,
     dplyr,
     ggplot2,
-    arrow,
-    devtools,
-    maps,
-    arrow,
     rnaturalearth,
-    rnaturalearthdata
+    stringr,
+    readr
 Suggests:
     devtools,
+    rnaturalearthdata,
+    tidyverse,
+    maps,
     knitr,
     pkgdown,
     rmarkdown,

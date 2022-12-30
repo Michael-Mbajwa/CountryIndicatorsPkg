@@ -1,3 +1,4 @@
+library(readr)
 # Is the function returning an expected value for a given input?
 test_that("country key details works", {
   returned_value <- country_key_details(country_name = "nigeria")

@@ -13,28 +13,33 @@ rank_indicators_by_country(indicator_name, year = "2021", n = 231, pos = 1)
 
 \item{n}{Number of countries to be ranked. Maximum is 231 and Minimum is 1.}
 
-\item{pos}{View the countries in ascending or descending order. Use 1 for Top result and -1 for bottom results.}
+\item{pos}{View the countries in ascending or descending order.
+Use 1 for Top result and -1 for bottom results.}
 }
 \value{
 A data frame
 }
 \description{
-This function ranks countries by their performance in a particular world bank indicator.
+This function ranks countries by their performance in a
+particular world bank indicator.
 }
 \details{
-This function allows the user to create a data frame containing the rank of countries according
+This function allows the user to create a data frame containing the rank of
+countries according
 to an indicator in a specified year.See the examples below for its usage.
 }
 \section{Warning}{
  Getting indicator name can be difficult. Run all_indicators_like(like)
-        with like being a string you want your indicator to contain. From there you can select your indicator name.
+        with like being a string you want your indicator to contain. From
+        there you can select your indicator name.
 }
 
 \examples{
 # See the top 10 countries for a specific indicator in a specific year
-rank_indicators_by_country("Current health expenditure per capita (current US$)", year="2002", n=10)
+rank_indicators_by_country("Current health expenditure per capita (current US$)",year="2002", n=10)
 # See the bottom 10 countries for a specific indicator in a specific year
-rank_indicators_by_country("Current health expenditure per capita (current US$)", year="2002", n=10, p=-1)
+rank_indicators_by_country("Current health expenditure per capita (current US$)",year="2002",
+n=10, p=-1)
 }
 \author{
 Michael Mbajwa

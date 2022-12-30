@@ -1,8 +1,9 @@
+library(readr)
 # Is the function returning an expected value for a given input?
 test_that("rank indicators by country works", {
   returned_value <- rank_indicators_by_country(indicator_name = "Adults (ages 15+) and children (ages 0-14) newly infected with HIV")
 
-  expected_value <- readr::read_csv("test_data_rank_indicators_by_country.csv")%>%mutate_at(c("Year"), as.character)
+  expected_value <- readr::read_csv("test_data_rank_indicators_by_country.csv")|>dplyr::mutate_at(c("Year"), as.character)
 
   expect_equal(returned_value, expected_value)
 })

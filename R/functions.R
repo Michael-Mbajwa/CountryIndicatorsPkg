@@ -1,18 +1,14 @@
 # Load packages
-library(tidyverse)
 library(dplyr)
 library(ggplot2)
-library(arrow)
 library(rnaturalearth)
-library(rnaturalearthdata)
-library(maps)
+library(readr)
 
 
 #' Get Key Country Details
 #' @description Helper function for country_key_details.
 #' @param col_name The column name to be extracted from the loaded data frame.
 #' @param col_value The value which is used to filter col_name
-#' @importFrom magrittr %>%
 #' @importFrom stringr str_detect
 #' @importFrom dplyr filter select distinct collect
 #' @importFrom tidyr pivot_longer
@@ -28,17 +24,17 @@ library(maps)
 
   # check if parameter exists
   if(sum(stringr::str_detect(all_data
-                             %>%select({{col_name}})
-                             %>%collect()
-                             %>% as.matrix
-                             %>%as.vector(), paste("^", col_value, "$", sep=""))) <= 0) {
+                             |>dplyr::select({{col_name}})
+                             |>dplyr::collect()
+                             |> as.matrix()
+                             |>as.vector(), paste("^", col_value, "$", sep=""))) <= 0) {
     stop(sprintf("%s is not contained in our dataset.", {{col_value}}))
   }
 
-  all_data %>%
-    dplyr::filter({{col_name}}==col_value) %>%
-    dplyr::select(c(Country_Name, Long_Name, Country_Code, Currency_Unit, Region, Income_Group, Head_of_state, Head_of_government, Gender_HoS)) %>%
-    dplyr::distinct() %>%
+  all_data |>
+    dplyr::filter({{col_name}}==col_value) |>
+    dplyr::select(c(Country_Name, Long_Name, Country_Code, Currency_Unit, Region, Income_Group, Head_of_state, Head_of_government, Gender_HoS)) |>
+    dplyr::distinct() |>
     tidyr::pivot_longer(cols = c(Country_Name, Long_Name, Country_Code, Currency_Unit, Region, Income_Group, Head_of_state, Head_of_government, Gender_HoS),
                         names_to = "Columns",
                         values_to = "Values")
@@ -50,7 +46,6 @@ library(maps)
 #' @description This function returns important information regarding specified country.
 #' @param country_name The name of the country whose details the user wants to extract.
 #' @param country_code The country code of the country.
-#' @importFrom magrittr %>%
 #' @importFrom stringr str_to_title str_to_upper
 #' @export
 #' @return A data frame
@@ -120,7 +115,6 @@ country_key_details <- function(country_name, country_code) {
 #' @description This function returns the country leader for the specified country.
 #' @param country_name The name of the country whose country_leader the user wants to extract.
 #' @param country_code The country code of the country.
-#' @importFrom magrittr %>%
 #' @importFrom dplyr filter collect
 #' @export
 #' @return A data frame
@@ -140,7 +134,7 @@ country_leader <- function(country_name, country_code) {
   final_results <- country_key_details(country_name, country_code)
 
   if(TRUE %in% (class(final_results) == c("tbl_df", "tbl", "data.frame"))) {
-    return(final_results %>% dplyr::filter(Columns=="Head_of_state" | Columns=="Head_of_government" | Columns=="Gender_HoS"))
+    return(final_results |> dplyr::filter(Columns=="Head_of_state" | Columns=="Head_of_government" | Columns=="Gender_HoS"))
   } else {
     stop(final_results)
   }
@@ -150,7 +144,6 @@ country_leader <- function(country_name, country_code) {
 
 #' View All Countries
 #' @description This function returns names of all the countries in the world.
-#' @importFrom magrittr %>%
 #' @importFrom dplyr select distinct collect
 #' @export
 #' @return A vector
@@ -160,7 +153,7 @@ country_leader <- function(country_name, country_code) {
 all_countries <- function(){
   # read the data
   all_data <- FinalCompleteData
-  result <- all_data %>% dplyr::select(Country_Name) %>% dplyr::distinct() %>% collect() %>% as.matrix %>% as.vector()
+  result <- all_data |> dplyr::select(Country_Name) |> dplyr::distinct() |> dplyr::collect() |> as.matrix() |> as.vector()
   return(result)
 }
 
@@ -168,7 +161,6 @@ all_countries <- function(){
 
 #' All World Bank Indicators
 #' @description This function extracts vector of World Bank indicators.
-#' @importFrom magrittr %>%
 #' @importFrom dplyr select distinct collect
 #' @export
 #' @return A vector
@@ -178,7 +170,7 @@ all_countries <- function(){
 all_indicators <- function(){
   # read the data
   all_data <- FinalCompleteData
-  result <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct() %>% collect() %>% as.matrix %>% as.vector()
+  result <- all_data |> dplyr::select(Indicator_Name) |> dplyr::distinct() |> dplyr::collect() |> as.matrix() |> as.vector()
   return(result)
 }
 
@@ -191,7 +183,6 @@ all_indicators <- function(){
 #' @param col_value The value which is used to filter col_name.
 #' @param indicator_contains A string that indicator should contain.
 #' @param year The year you are interested in. Must be a string.
-#' @importFrom magrittr %>%
 #' @importFrom stringr str_detect
 #' @importFrom dplyr filter select distinct collect
 #' @importFrom tidyr pivot_longer
@@ -213,27 +204,27 @@ all_indicators <- function(){
 
   # check if parameter "indicator_contains" exists
   if(sum(stringr::str_detect(all_data
-                             %>%dplyr::select(Indicator_Name)
-                             %>%collect()
-                             %>% as.matrix
-                             %>%as.vector(), paste("(?i)", indicator_contains, sep=""))) <= 0) {
+                             |>dplyr::select(Indicator_Name)
+                             |>dplyr::collect()
+                             |> as.matrix()
+                             |>as.vector(), paste("(?i)", indicator_contains, sep=""))) <= 0) {
     stop(sprintf("An indicator containing %s is not contained in the dataset.", indicator_contains))
   }
 
 
   # check if parameter "col_value" exists
   if(sum(stringr::str_detect(all_data
-                             %>%dplyr::select({{col_name}})
-                             %>%collect()
-                             %>% as.matrix
-                             %>%as.vector(), paste("^", col_value, "$", sep=""))) <= 0) {
+                             |>dplyr::select({{col_name}})
+                             |>dplyr::collect()
+                             |> as.matrix()
+                             |>as.vector(), paste("^", col_value, "$", sep=""))) <= 0) {
     stop(sprintf("%s is not contained in our dataset.", {{col_value}}))
   }
 
 
-  return(all_data %>%
-           dplyr::filter({{col_name}}==col_value & str_detect(Indicator_Name, paste("(?i)", indicator_contains, sep=""))) %>% select(c(3, 5:66)) %>%
-           tidyr::pivot_longer(cols = c(2:63), names_to = "Year", values_to = "Values") %>%
+  return(all_data |>
+           dplyr::filter({{col_name}}==col_value & stringr::str_detect(Indicator_Name, paste("(?i)", indicator_contains, sep=""))) |> dplyr::select(c(3, 5:66)) |>
+           tidyr::pivot_longer(cols = c(2:63), names_to = "Year", values_to = "Values") |>
            dplyr::filter(Year==year))
 }
 
@@ -247,7 +238,6 @@ all_indicators <- function(){
 #' @param country_code The country code of the country.
 #' @param indicator_contains A string that world bank indicator should contain.
 #' @param year The year you are interested in. Must be a string.
-#' @importFrom magrittr %>%
 #' @importFrom stringr str_to_title str_to_upper
 #' @export
 #' @return A data frame
@@ -322,27 +312,31 @@ country_indicator <- function(country_name, country_code, indicator_contains, ye
 
 
 #' Rank Country By Indicator
-#' @description This function ranks countries by their performance in a particular world bank indicator.
+#' @description This function ranks countries by their performance in a
+#' particular world bank indicator.
 #' @param indicator_name The full indicator name the user is interested in.
 #' @param year The year you are interested in. Must be a string.
 #' @param n Number of countries to be ranked. Maximum is 231 and Minimum is 1.
-#' @param pos View the countries in ascending or descending order. Use 1 for Top result and -1 for bottom results.
-#' @importFrom magrittr %>%
-#' @importFrom stringr str_to_title str_to_upper
+#' @param pos View the countries in ascending or descending order.
+#' Use 1 for Top result and -1 for bottom results.
+#' @importFrom stringr str_to_title str_to_upper str_detect
 #' @importFrom dplyr filter select distinct top_n arrange across starts_with collect mutate
 #' @importFrom tidyr pivot_longer
 #' @export
 #' @return A data frame
 #' @details
-#' This function allows the user to create a data frame containing the rank of countries according
+#' This function allows the user to create a data frame containing the rank of
+#' countries according
 #' to an indicator in a specified year.See the examples below for its usage.
 #' @section Warning: Getting indicator name can be difficult. Run all_indicators_like(like)
-#'         with like being a string you want your indicator to contain. From there you can select your indicator name.
+#'         with like being a string you want your indicator to contain. From
+#'         there you can select your indicator name.
 #' @examples
 #' # See the top 10 countries for a specific indicator in a specific year
-#' rank_indicators_by_country("Current health expenditure per capita (current US$)", year="2002", n=10)
+#' rank_indicators_by_country("Current health expenditure per capita (current US$)",year="2002", n=10)
 #' # See the bottom 10 countries for a specific indicator in a specific year
-#' rank_indicators_by_country("Current health expenditure per capita (current US$)", year="2002", n=10, p=-1)
+#' rank_indicators_by_country("Current health expenditure per capita (current US$)",year="2002",
+#' n=10, p=-1)
 #' @author Michael Mbajwa
 rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1) {
   # check if indicator_name is missing
@@ -378,10 +372,10 @@ rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1
   }
 
   # check if indicator_name exists
-  indicators_vec <- all_data %>% dplyr::select(Indicator_Name) %>% collect() %>% as.matrix %>% as.vector()
+  indicators_vec <- all_data |> dplyr::select(Indicator_Name) |> dplyr::collect() |> as.matrix() |> as.vector()
   if(!indicator_name %in% indicators_vec) {
     #if indicator_name does not exist
-    indicators_like <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct() %>% dplyr::filter(str_detect(Indicator_Name, paste("(?i)", indicator_name, sep=""))) %>% collect() %>% as.matrix %>% as.vector()
+    indicators_like <- all_data |> dplyr::select(Indicator_Name) |> dplyr::distinct() |> dplyr::filter(stringr::str_detect(Indicator_Name, paste("(?i)", indicator_name, sep=""))) |> dplyr::collect() |> as.matrix() |> as.vector()
 
     if(length(indicators_like > 0)){
       options(warn = 1)
@@ -392,14 +386,14 @@ rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1
     stop(sprintf("The indicator - %s is not contained in our dataset. Run all_indicators_like(indicator_name) to see names of indicators.", indicator_name))
   } else{
     # If indicator_name exists
-    final<- all_data %>%
-      dplyr::filter(Indicator_Name==indicator_name) %>%
-      dplyr::select(c(1, 5:66)) %>%
-      dplyr::mutate(dplyr::across(dplyr::starts_with("1")|dplyr::starts_with("2"), ~as.numeric(gsub(",", ".", .x)))) %>%
-      tidyr::pivot_longer(cols = c(2:63), names_to="Year", values_to = "values") %>%
-      dplyr::filter(Year==year) %>%
+    final<- all_data |>
+      dplyr::filter(Indicator_Name==indicator_name) |>
+      dplyr::select(c(1, 5:66)) |>
+      dplyr::mutate(dplyr::across(dplyr::starts_with("1")|dplyr::starts_with("2"), ~as.numeric(gsub(",", ".", .x)))) |>
+      tidyr::pivot_longer(cols = c(2:63), names_to="Year", values_to = "values") |>
+      dplyr::filter(Year==year) |>
       dplyr::top_n(n*pos)
-    if (pos==-1){return(final %>% dplyr::arrange(values))}else{return(final %>% dplyr::arrange(desc(values)))}
+    if (pos==-1){return(final |> dplyr::arrange(values))}else{return(final |> dplyr::arrange(desc(values)))}
   }
 }
 
@@ -408,8 +402,8 @@ rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1
 #' All Indicators like String
 #' @description This function returns all indicators that contain string provided.
 #' @param like A string the indicator name should contain.
-#' @importFrom magrittr %>%
 #' @importFrom dplyr select distinct filter collect
+#' @importFrom stringr str_detect
 #' @export
 #' @return A vector
 #' @details This function returns all indicators that contain strings provided
@@ -423,7 +417,7 @@ all_indicators_like <- function(like){
   }
   # read the data
   all_data <- FinalCompleteData
-  indicators_like <- all_data %>% dplyr::select(Indicator_Name) %>% dplyr::distinct() %>% dplyr::filter(str_detect(Indicator_Name, paste("(?i)", like, sep=""))) %>% collect() %>% as.matrix %>% as.vector()
+  indicators_like <- all_data |> dplyr::select(Indicator_Name) |> dplyr::distinct() |> dplyr::filter(stringr::str_detect(Indicator_Name, paste("(?i)", like, sep=""))) |> dplyr::collect() |> as.matrix() |> as.vector()
   if(length(indicators_like)>0){return(indicators_like)} else{
     options(warn = 1)
     warning(sprintf("No indicator like %s found", like))
@@ -435,11 +429,10 @@ all_indicators_like <- function(like){
 #' Plot all countries
 #' @description This function returns a plot of all the countries we have indicators for.
 #' @param map_title A string containing desired title for the plot
-#' @importFrom magrittr %>%
 #' @importFrom dplyr select distinct filter collect mutate
 #' @importFrom maps world
 #' @importFrom rnaturalearth ne_countries
-#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 ggplot geom_sf theme_void theme
 #' @export
 #' @return A plot
 #' @details This function returns a plot of all the countries we have indicators for.
@@ -451,16 +444,16 @@ make_plot_countries <- function(map_title="World Map"){
 
   all_data_countries = all_countries()
 
-  world <- ne_countries(scale = "medium", returnclass = "sf")
+  world <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
 
-  world_modified <- world %>%
-    mutate(my_selection = ifelse(admin %in% all_data_countries,
+  world_modified <- world |>
+    dplyr::mutate(my_selection = ifelse(admin %in% all_data_countries,
                                  1, NA))
 
-  ggplot(data = world_modified) +
-    geom_sf(aes(fill=my_selection)) +
-    theme_void() +
-    theme(legend.position = "none") + labs(title=map_title)
+  ggplot2::ggplot(data = world_modified) +
+    ggplot2::geom_sf(ggplot2::aes(fill=my_selection)) +
+    ggplot2::theme_void() +
+    ggplot2::theme(legend.position = "none") + ggplot2::labs(title=map_title)
 }
 
 
@@ -468,11 +461,11 @@ make_plot_countries <- function(map_title="World Map"){
 #' Country map
 #' @description This function returns a plot of specified country with key details provided.
 #' @param all_country_details A dataframe returned from the function country_key_details("nigeira").
-#' @importFrom magrittr %>%
 #' @importFrom dplyr select distinct filter collect mutate
-#' @importFrom maps world
+#' @importFrom tidyr pivot_wider
 #' @importFrom rnaturalearth ne_countries
-#' @importFrom ggplot2 ggplot map_data theme_bw theme geom_polygon
+#' @importFrom ggplot2 ggplot map_data theme_bw theme geom_polygon coord_map coord_fixed
+#' ggtitle scale_x_continuous scale_y_continuous element_blank element_text element_rect
 #' @export
 #' @return A ggplot
 #' @details This function returns a plot of specified country with key details provided.
@@ -481,7 +474,7 @@ make_plot_countries <- function(map_title="World Map"){
 #' map_country(all_country_details=country_key_details("nigeria"))
 #' @author Michael Mbajwa
 map_country <- function(all_country_details){
-  country_details <- all_country_details %>% pivot_wider(names_from = Columns, values_from = Values)
+  country_details <- all_country_details |> tidyr::pivot_wider(names_from = Columns, values_from = Values)
   country <- country_details$Country_Name
 
   currency <- paste("Currency:", country_details$Currency_Unit)
@@ -491,26 +484,26 @@ map_country <- function(all_country_details){
   head_gov <- paste("Head of Government:", country_details$Head_of_government)
   sup_title <- paste(currency, region, income_grp, head_state, head_gov, sep="\n")
 
-  if(!country %in% map_data('world')$region) stop(paste('Country name:', country, "not recognized"))
+  if(!country %in% ggplot2::map_data('world')$region) stop(paste('Country name:', country, "not recognized"))
 
   ## Let's define our custom theme for the final map
-  map_country_theme <- theme_bw() +
-    theme(panel.background = element_rect(fill = '#4e91d2'),
+  map_country_theme <- ggplot2::theme_bw() +
+    ggplot2::theme(panel.background = ggplot2::element_rect(fill = '#4e91d2'),
           legend.position = 'none',
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          axis.line = element_line(colour = "black"),
-          axis.title.x=element_blank(),
-          axis.text.x=element_blank(),
-          axis.ticks.x=element_blank(),
-          axis.title.y=element_blank(),
-          axis.text.y=element_blank(),
-          axis.ticks.y=element_blank(),
-          plot.title = element_text(color = "black", size = 12, face = "bold"),
-          plot.subtitle = element_text(color = "blue", face = "italic"))
+          panel.grid.major = ggplot2::element_blank(),
+          panel.grid.minor = ggplot2::element_blank(),
+          axis.line = ggplot2::element_line(colour = "black"),
+          axis.title.x=ggplot2::element_blank(),
+          axis.text.x=ggplot2::element_blank(),
+          axis.ticks.x=ggplot2::element_blank(),
+          axis.title.y=ggplot2::element_blank(),
+          axis.text.y=ggplot2::element_blank(),
+          axis.ticks.y=ggplot2::element_blank(),
+          plot.title = ggplot2::element_text(color = "black", size = 12, face = "bold"),
+          plot.subtitle = ggplot2::element_text(color = "blue", face = "italic"))
 
   ## make a df with only the country to overlap
-  map_data_country <- map_data('world')[map_data('world')$region == country,]
+  map_data_country <- ggplot2::map_data('world')[ggplot2::map_data('world')$region == country,]
 
   # get coordinates
   x_min <- min(map_data_country$long)
@@ -523,22 +516,22 @@ map_country <- function(all_country_details){
   y_limits <- c(y_min, y_max)
 
   ## The map (maps + ggplot2 )
-  ggplot() +
+  ggplot2::ggplot() +
     ## First layer: worldwide map
-    geom_polygon(data = map_data("world"),
-                 aes(x=long, y=lat, group = group),
+    ggplot2::geom_polygon(data = ggplot2::map_data("world"),
+                          ggplot2::aes(x=long, y=lat, group = group),
                  color = '#9c9c9c', fill = '#f3f3f3') +
     ## Second layer: Country map
-    geom_polygon(data = map_data_country,
-                 aes(x=long, y=lat, group = group),
+    ggplot2::geom_polygon(data = map_data_country,
+                          ggplot2::aes(x=long, y=lat, group = group),
                  color = '#4d696e', fill = '#8caeb4') +
-    coord_map() +
-    coord_fixed(1.3,
+    ggplot2::coord_map() +
+    ggplot2::coord_fixed(1.3,
                 xlim = x_limits,
                 ylim = y_limits) +
-    ggtitle(label=paste0("A map of ", stringr::str_to_upper(country)),
+    ggplot2::ggtitle(label=paste0("A map of ", stringr::str_to_upper(country)),
             subtitle = sup_title) +
-    scale_x_continuous(n.breaks = 20) +
-    scale_y_continuous(n.breaks = 20) +
+    ggplot2::scale_x_continuous(n.breaks = 20) +
+    ggplot2::scale_y_continuous(n.breaks = 20) +
     map_country_theme
 }

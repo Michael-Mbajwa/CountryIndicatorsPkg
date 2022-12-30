@@ -1,9 +1,10 @@
+library(readr)
 # Is the function returning an expected value for a given input?
 
 test_that("selecting indicators like hiv works", {
   returned_value <- all_indicators_like("hiv")
 
-  expected_value <- readr::read_csv("test_data_all_indicators_like.csv")%>%collect()%>%as.matrix()%>%as.vector()
+  expected_value <- readr::read_csv("test_data_all_indicators_like.csv")|>dplyr::collect()|>as.matrix()|>as.vector()
 
   expect_equal(returned_value, expected_value)
 })

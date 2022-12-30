@@ -1,3 +1,4 @@
+library(readr)
 # Is the function returning an expected value for a given input?
 test_that("country indicator works", {
   returned_value <- country_indicator(country_code = "usa", indicator_contains = "health", year = "2002")

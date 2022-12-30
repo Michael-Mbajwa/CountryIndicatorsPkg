@@ -1,3 +1,4 @@
+library(readr)
 # Is the function returning an expected value for a given input?
 test_that("country leader works", {
   returned_value <- country_leader(country_name = "luxembourg")
