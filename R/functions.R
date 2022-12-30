@@ -6,15 +6,15 @@ library(arrow)
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(maps)
-library(ggplot2)
 
 
 #' Get Key Country Details
 #' @description Helper function for country_key_details.
 #' @param col_name The column name to be extracted from the loaded data frame.
 #' @param col_value The value which is used to filter col_name
+#' @importFrom magrittr %>%
 #' @importFrom stringr str_detect
-#' @importFrom dplyr filter select distinct
+#' @importFrom dplyr filter select distinct collect
 #' @importFrom tidyr pivot_longer
 #' @return A data frame
 #' @noRd
@@ -50,7 +50,8 @@ library(ggplot2)
 #' @description This function returns important information regarding specified country.
 #' @param country_name The name of the country whose details the user wants to extract.
 #' @param country_code The country code of the country.
-#' @importFrom stringr str_to_title
+#' @importFrom magrittr %>%
+#' @importFrom stringr str_to_title str_to_upper
 #' @export
 #' @return A data frame
 #' @details
@@ -119,7 +120,8 @@ country_key_details <- function(country_name, country_code) {
 #' @description This function returns the country leader for the specified country.
 #' @param country_name The name of the country whose country_leader the user wants to extract.
 #' @param country_code The country code of the country.
-#' @importFrom dplyr filter
+#' @importFrom magrittr %>%
+#' @importFrom dplyr filter collect
 #' @export
 #' @return A data frame
 #' @details
@@ -148,7 +150,8 @@ country_leader <- function(country_name, country_code) {
 
 #' View All Countries
 #' @description This function returns names of all the countries in the world.
-#' @importFrom dplyr select distinct
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select distinct collect
 #' @export
 #' @return A vector
 #' @details
@@ -165,7 +168,8 @@ all_countries <- function(){
 
 #' All World Bank Indicators
 #' @description This function extracts vector of World Bank indicators.
-#' @importFrom dplyr select distinct
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select distinct collect
 #' @export
 #' @return A vector
 #' @details
@@ -187,8 +191,9 @@ all_indicators <- function(){
 #' @param col_value The value which is used to filter col_name.
 #' @param indicator_contains A string that indicator should contain.
 #' @param year The year you are interested in. Must be a string.
+#' @importFrom magrittr %>%
 #' @importFrom stringr str_detect
-#' @importFrom dplyr filter select distinct
+#' @importFrom dplyr filter select distinct collect
 #' @importFrom tidyr pivot_longer
 #' @return A data frame
 #' @noRd
@@ -242,6 +247,7 @@ all_indicators <- function(){
 #' @param country_code The country code of the country.
 #' @param indicator_contains A string that world bank indicator should contain.
 #' @param year The year you are interested in. Must be a string.
+#' @importFrom magrittr %>%
 #' @importFrom stringr str_to_title str_to_upper
 #' @export
 #' @return A data frame
@@ -321,8 +327,9 @@ country_indicator <- function(country_name, country_code, indicator_contains, ye
 #' @param year The year you are interested in. Must be a string.
 #' @param n Number of countries to be ranked. Maximum is 231 and Minimum is 1.
 #' @param pos View the countries in ascending or descending order. Use 1 for Top result and -1 for bottom results.
+#' @importFrom magrittr %>%
 #' @importFrom stringr str_to_title str_to_upper
-#' @importFrom dplyr filter select distinct top_n arrange across starts_with
+#' @importFrom dplyr filter select distinct top_n arrange across starts_with collect mutate
 #' @importFrom tidyr pivot_longer
 #' @export
 #' @return A data frame
@@ -401,7 +408,8 @@ rank_indicators_by_country <- function(indicator_name, year="2021", n=231, pos=1
 #' All Indicators like String
 #' @description This function returns all indicators that contain string provided.
 #' @param like A string the indicator name should contain.
-#' @importFrom dplyr select distinct filter
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select distinct filter collect
 #' @export
 #' @return A vector
 #' @details This function returns all indicators that contain strings provided
@@ -427,8 +435,11 @@ all_indicators_like <- function(like){
 #' Plot all countries
 #' @description This function returns a plot of all the countries we have indicators for.
 #' @param map_title A string containing desired title for the plot
-#' @importFrom dplyr select distinct filter
-#' @importFrom maps map
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select distinct filter collect mutate
+#' @importFrom maps world
+#' @importFrom rnaturalearth ne_countries
+#' @importFrom ggplot2 ggplot
 #' @export
 #' @return A plot
 #' @details This function returns a plot of all the countries we have indicators for.
@@ -457,8 +468,11 @@ make_plot_countries <- function(map_title="World Map"){
 #' Country map
 #' @description This function returns a plot of specified country with key details provided.
 #' @param all_country_details A dataframe returned from the function country_key_details("nigeira").
-#' @importFrom dplyr select distinct filter
-#' @importFrom maps map
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select distinct filter collect mutate
+#' @importFrom maps world
+#' @importFrom rnaturalearth ne_countries
+#' @importFrom ggplot2 ggplot map_data theme_bw theme geom_polygon
 #' @export
 #' @return A ggplot
 #' @details This function returns a plot of specified country with key details provided.

@@ -14,10 +14,15 @@ Depends:
     R (>= 4.1),
 Imports:
     tidyverse,
+    tidyr,
     dplyr,
     ggplot2,
     arrow,
-    devtools
+    devtools,
+    maps,
+    arrow,
+    rnaturalearth,
+    rnaturalearthdata
 Suggests:
     devtools,
     knitr,
