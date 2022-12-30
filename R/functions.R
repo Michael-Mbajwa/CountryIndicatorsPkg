@@ -474,7 +474,7 @@ map_country <- function(all_country_details){
   region <- paste("Region:", country_details$Region)
   income_grp <- paste("Income Group:", country_details$Income_Group)
   head_state <- paste("Head of State:", country_details$Head_of_state)
-  head_gov <- paste("Head of State:", country_details$Head_of_government)
+  head_gov <- paste("Head of Government:", country_details$Head_of_government)
   sup_title <- paste(currency, region, income_grp, head_state, head_gov, sep="\n")
 
   if(!country %in% map_data('world')$region) stop(paste('Country name:', country, "not recognized"))
