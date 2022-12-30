@@ -8,4 +8,4 @@
 
 
 To install the package, please use the following line:
-*devtools::install_github("Michael-Mbajwa/CountryIndicatorsPkg", ref = "51be55b90bcd9111e0e1ee73018be32b16e7af78")*
+*devtools::install_github("Michael-Mbajwa/CountryIndicatorsPkg", ref = "ca06e8ac0f131487126382b565fc21aa1b74fce3")*
